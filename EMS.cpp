@@ -1,8 +1,5 @@
 #include "EMS.h"
-#include<stdlib.h>
-#include<iostream>
-#include <string.h>
-#include <stdio.h>
+
 using namespace std;
 EMS::EMS(const char* filename,int l,int d)
 {
@@ -15,8 +12,10 @@ EMS::EMS(const char* filename,int l,int d)
     //int ivalue = convertCharToInt(str);
     //char* re  = convertIntToChar(ivalue);
     //cout<<re<<endl;
-    A1 = new int[sizeofA];
-    A2 = new int[sizeofA];
+   // A1 = new int[sizeofA];
+   // A2 = new int[sizeofA];
+    //memset(A1,sizeofA,-1);
+    //memset(A2,sizeofA,0);
     char *l_mer = new char[l];
     FILE *fp;
     char StrLine[1024],StrLineFM[1024];
@@ -28,30 +27,29 @@ EMS::EMS(const char* filename,int l,int d)
     while (!feof(fp))    
     {
         fgets(StrLine,1024,fp);
-        if(StrLine[0]=='#')
+        if(StrLine[0]=='>')
             continue;
-        StrLine[strlen(StrLine)-1]='\0';
+        StrLine[strlen(StrLine)-2]='\0';// 最后有\r\n;
         int len =strlen(StrLine);
         for(int i =0;i<len+1-l;i++)
         {
-            memcpy(l_mer,StrLine+i,l);
-            process(l_mer);
+            memcpy(l_mer,StrLine+i,l);   
+            process(l_mer,n);
         }  
         n++;
     }
-    for(int i =0;i<pow(4,l);i++)
-        {
-            if(n==A2[i])
-            {
-                    cout<<convertIntToChar(i)<<endl;
-            }
-        }
+      for(hashmap::iterator it = A2.begin();it!=A2.end();it++)
+     {
+         if(it->second == n)
+            cout<<"motif:"<<it->first<<endl;
+     }
     delete [] l_mer;
     
 }
 void EMS::init()
 {
-
+    newmap = new hashmap();
+    oldmap = new hashmap();
     alphabetsize = 4;
     alphabet = new char[alphabetsize];
     alphabet[0] ='A';
@@ -90,20 +88,40 @@ int EMS::convertCharToInt(char *input)
     return value>>2;
 }
 
-void EMS::process(char* lmer)
+void EMS::process(char* lmer,int mercount)
 {
     string strtxt((char*)lmer);
-    oldmap->insert(hashpair(strtxt,1));
+    //(*temp)[] = 1;
+    newmap->clear();
+    oldmap->clear();
+    newmap->insert(pair<string,int>(strtxt,-1));
+    A1.insert(pair<string,int>(strtxt,-1));
+    oldmap->insert(pair<string,int>(strtxt,-1));
     for(int i =0;i<motif_d;i++)
     {
         editOneTime();
     }
+    int size = oldmap->size();
+   // cout<<"共生成："<<size<<endl;
+    for(hashmap::iterator it = A1.begin();it!=A1.end();it++)
+    {
+        if(it->first.length()==motif_l && it->second !=mercount )
+        {
+            if(it->first.length()==5)
+                cout<<"123";
+            it->second =mercount;
+            A2[it->first] ++;  
+        }
+    }
+
 }
 
 void EMS::editOneTime()
 {
+    hashmap* tempmap = new hashmap();
     string itstr;
     string temp;
+    //cout<<"sizeof newmap:"<<newmap->size()<<endl;
     for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
     {
         int i =0;
@@ -117,34 +135,54 @@ void EMS::editOneTime()
             {
                 temp = itstr;
                 temp.replace(i,1,1,alphabet[i1]);
-                if((*oldmap)[temp]!=1)
-                    tempmap->insert(hashpair(temp,1));
+                if((*oldmap)[temp]!=-1)
+               {
+                    tempmap->insert(pair<string,int>(temp,-1));
+             //       cout<<"substitut:"<<temp<<endl;
+               }
             }
             //delete
             temp = itstr;
-            temp.erase(i);
-            if((*oldmap)[temp]!=1)
+            temp.erase(i,1);
+            if((*oldmap)[temp]!=-1)
             {
-                tempmap->insert(hashpair(temp,1));
+                tempmap->insert(pair<string,int>(temp,-1));
+               //  cout<<"delete:"<<temp<<endl;
             }   
             //insert
             for(int i1 = 0;i1<alphabetsize;i1++)
             {
                 temp = itstr;
-                itstr.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]!=1)
-                    tempmap->insert(hashpair(temp,1));
+                temp.insert(i,1,alphabet[i1]);
+                if((*oldmap)[temp]!=-1)
+                    {
+                 //       cout << "insert:" << temp << endl;
+                        tempmap->insert(pair<string,int>(temp,-1));
+                    }
             }
         }
         for(int i1 = 0;i1<alphabetsize;i1++)
         {
                 temp = itstr;
-                itstr.insert(i,i,alphabet[i1]);
-                if((*oldmap)[temp]!=1)
-                    tempmap->insert(hashpair(temp,1));
+                temp.insert(i,1,alphabet[i1]);
+                if((*oldmap)[temp]!=-1)
+                   tempmap->insert(pair<string,int>(temp,-1));
         }
     }
     //now element in newmap is become old ,so combine oldmap and newmap
     //and set tempmap as newmap
-    
+    for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
+    {
+        (*oldmap)[it->first] = it->second;
+        A1[it->first] = it->second;
+        //cout<<"newmap:"<<it->first<<endl;
+    }
+    newmap->clear();
+    for(hashmap::iterator it = tempmap->begin();it!=tempmap->end();it++)
+    {
+        (*newmap)[it->first] = it->second;
+        (*oldmap)[it->first] = it->second;
+        A1[it->first] = it->second;
+        //cout<<"tempmap:"<<it->first<<endl;
+    }
 }

@@ -7,6 +7,6 @@
 #include"EMS.h"
 int main(int argc,char* argv[])
 {
-    EMS em("./bible",6,2);    
+    EMS em("/home/wch/yst03r.fasta",6,2);    
     return 0;
 }

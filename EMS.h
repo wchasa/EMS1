@@ -1,5 +1,9 @@
 #ifndef _Inarray
 #define _Inarray
+#include<stdlib.h>
+#include<iostream>
+#include <string.h>
+#include <stdio.h>
 #include <math.h>
 #include <unordered_map>
 #include <map>
@@ -15,16 +19,16 @@ class EMS
     private:
     int motif_l;
     int motif_d;
-    int* A1;
-    int* A2;
+    hashmap A1;
+    hashmap A2;
     map<char,char> chartoIntMap;
     char * convertIntToChar(int input);
     int convertCharToInt(char *input);
     void init();
-    void process(char* lmer);
+    void process(char* lmer,int mercount);
     hashmap* newmap;
     hashmap* oldmap;
-    hashmap* tempmap;
+    //hashmap* tempmap;
     char* alphabet;
     int alphabetsize;
     void editOneTime();
