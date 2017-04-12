@@ -5,6 +5,8 @@
 #include <map>
 using namespace std;
 
+typedef std::unordered_map<string,int> hashmap;
+typedef std::pair<string,int> hashpair;
 class EMS
 {
     public:
@@ -20,8 +22,11 @@ class EMS
     int convertCharToInt(char *input);
     void init();
     void process(char* lmer);
-    unordered_map<string,int> newhashmap;
-    unordered_map<string,int> oldhashmap;
-
+    hashmap* newmap;
+    hashmap* oldmap;
+    hashmap* tempmap;
+    char* alphabet;
+    int alphabetsize;
+    void editOneTime();
 };
 #endif

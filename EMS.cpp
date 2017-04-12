@@ -51,14 +51,18 @@ EMS::EMS(const char* filename,int l,int d)
 }
 void EMS::init()
 {
-    chartoIntMap.insert(pair<char,char>(0,'A'));
-    chartoIntMap.insert(pair<char,char>(1,'C'));
-    chartoIntMap.insert(pair<char,char>(2,'G'));
-    chartoIntMap.insert(pair<char,char>(3,'T'));
-    chartoIntMap.insert(pair<char,char>('A',0));
-    chartoIntMap.insert(pair<char,char>('C',1));
-    chartoIntMap.insert(pair<char,char>('G',2));
-    chartoIntMap.insert(pair<char,char>('T',3));
+
+    alphabetsize = 4;
+    alphabet = new char[alphabetsize];
+    alphabet[0] ='A';
+    alphabet[1] ='C';
+    alphabet[2] ='G';
+    alphabet[3] ='T';
+    for(int i = 0;i<alphabetsize;i++)
+    {
+        chartoIntMap.insert(pair<char,char>((char)i,alphabet[i]));
+        chartoIntMap.insert(pair<char,char>(alphabet[i],(char)i));
+    }
 }
 char * EMS::convertIntToChar(int input)
 {
@@ -89,7 +93,7 @@ int EMS::convertCharToInt(char *input)
 void EMS::process(char* lmer)
 {
     string strtxt((char*)lmer);
-    oldhashmap.insert(pair<string,int>(strtxt,0));
+    oldmap->insert(hashpair(strtxt,1));
     for(int i =0;i<motif_d;i++)
     {
         editOneTime();
@@ -98,5 +102,49 @@ void EMS::process(char* lmer)
 
 void EMS::editOneTime()
 {
+    string itstr;
+    string temp;
+    for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
+    {
+        int i =0;
+        itstr = it->first;
+        int itstrLen = itstr.length();
+        for(i = 0;i<itstrLen;i++)
+        {
 
+        //substitut
+            for(int i1 = 0;i1<alphabetsize;i1++)
+            {
+                temp = itstr;
+                temp.replace(i,1,1,alphabet[i1]);
+                if((*oldmap)[temp]!=1)
+                    tempmap->insert(hashpair(temp,1));
+            }
+            //delete
+            temp = itstr;
+            temp.erase(i);
+            if((*oldmap)[temp]!=1)
+            {
+                tempmap->insert(hashpair(temp,1));
+            }   
+            //insert
+            for(int i1 = 0;i1<alphabetsize;i1++)
+            {
+                temp = itstr;
+                itstr.insert(i,1,alphabet[i1]);
+                if((*oldmap)[temp]!=1)
+                    tempmap->insert(hashpair(temp,1));
+            }
+        }
+        for(int i1 = 0;i1<alphabetsize;i1++)
+        {
+                temp = itstr;
+                itstr.insert(i,i,alphabet[i1]);
+                if((*oldmap)[temp]!=1)
+                    tempmap->insert(hashpair(temp,1));
+        }
+    }
+    //now element in newmap is become old ,so combine oldmap and newmap
+    //and set tempmap as newmap
+    
 }
