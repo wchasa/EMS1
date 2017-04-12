@@ -1,0 +1,1 @@
+./test ./yst03r.fasta 6 2

@@ -3,7 +3,7 @@
 using namespace std;
 EMS::EMS(const char* filename,int l,int d)
 {
-    int n =0;
+    mercount =0;
     init();
     int sizeofA = (int)pow(4,l);
     motif_l = l;
@@ -34,15 +34,32 @@ EMS::EMS(const char* filename,int l,int d)
         for(int i =0;i<len+1-l;i++)
         {
             memcpy(l_mer,StrLine+i,l);   
-            process(l_mer,n);
-        }  
-        n++;
+            process(l_mer);
+        } 
+        int size = A2.size();
+        cout<<"A2 size："<<size<<endl;
+        for(hashmap::iterator it = A1.begin();it!=A1.end();it++)
+        {
+           if(it->first.length()==motif_l && it->second !=mercount+1 )
+           {
+               it->second =mercount+1;
+               A2[it->first]++;  
+           }
+        }
+        A1.clear(); 
+        mercount++;
     }
+    int couttotal =0;
+   // cout<<"A2 size :"<<A2.size()<<endl;
       for(hashmap::iterator it = A2.begin();it!=A2.end();it++)
      {
-         if(it->second == n)
+         if(it->second == mercount)
+         {
             cout<<"motif:"<<it->first<<endl;
+            couttotal++;
+         }
      }
+     cout<<couttotal<<endl;
     delete [] l_mer;
     
 }
@@ -88,7 +105,7 @@ int EMS::convertCharToInt(char *input)
     return value>>2;
 }
 
-void EMS::process(char* lmer,int mercount)
+void EMS::process(char* lmer)
 {
     string strtxt((char*)lmer);
     //(*temp)[] = 1;
@@ -101,18 +118,16 @@ void EMS::process(char* lmer,int mercount)
     {
         editOneTime();
     }
-    int size = oldmap->size();
-   // cout<<"共生成："<<size<<endl;
+    /*int size = A2.size();
+    cout<<"A2 size："<<size<<endl;
     for(hashmap::iterator it = A1.begin();it!=A1.end();it++)
     {
-        if(it->first.length()==motif_l && it->second !=mercount )
+        if(it->first.length()==motif_l && it->second !=mercount+1 )
         {
-            if(it->first.length()==5)
-                cout<<"123";
-            it->second =mercount;
-            A2[it->first] ++;  
+            it->second =mercount+1;
+            A2[it->first]++;  
         }
-    }
+    }*/
 
 }
 
@@ -174,7 +189,8 @@ void EMS::editOneTime()
     for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
     {
         (*oldmap)[it->first] = it->second;
-        A1[it->first] = it->second;
+        if(A1[it->first]==0)
+            A1[it->first]= it->second;
         //cout<<"newmap:"<<it->first<<endl;
     }
     newmap->clear();
@@ -182,7 +198,8 @@ void EMS::editOneTime()
     {
         (*newmap)[it->first] = it->second;
         (*oldmap)[it->first] = it->second;
-        A1[it->first] = it->second;
+        if(A1[it->first]==0)
+            A1[it->first]= it->second;
         //cout<<"tempmap:"<<it->first<<endl;
     }
 }

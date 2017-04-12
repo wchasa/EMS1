@@ -25,12 +25,13 @@ class EMS
     char * convertIntToChar(int input);
     int convertCharToInt(char *input);
     void init();
-    void process(char* lmer,int mercount);
+    void process(char* lmer);
     hashmap* newmap;
     hashmap* oldmap;
     //hashmap* tempmap;
     char* alphabet;
     int alphabetsize;
     void editOneTime();
+    int mercount;
 };
 #endif
