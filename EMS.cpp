@@ -37,7 +37,7 @@ EMS::EMS(const char* filename,int l,int d)
             process(l_mer);
         } 
         int size = A2.size();
-        cout<<"A2 size："<<size<<endl;
+        //cout<<"A2 size："<<size<<endl;
         for(hashmap::iterator it = A1.begin();it!=A1.end();it++)
         {
            if(it->first.length()==motif_l && it->second !=mercount+1 )
@@ -46,7 +46,7 @@ EMS::EMS(const char* filename,int l,int d)
                A2[it->first]++;  
            }
         }
-        A1.clear(); 
+        A1.clear();
         mercount++;
     }
     int couttotal =0;
@@ -79,31 +79,7 @@ void EMS::init()
         chartoIntMap.insert(pair<char,char>(alphabet[i],(char)i));
     }
 }
-char * EMS::convertIntToChar(int input)
-{
-    char value =0;
-    char * p =new char[motif_l];
-    for(int i=0;i<motif_l;i++)
-    {
-        value =  input&0x03;
-        p[motif_l-i-1]  =  chartoIntMap[(char)value];
-        input = input>>2;
-    }
-    return p;
-    //delete [] p;
-    //p=NULL;
-}
 
-int EMS::convertCharToInt(char *input)
-{
-    int value = 0;
-    for(int i =0;i<motif_l;i++)
-    {
-      value += chartoIntMap[input[i]];
-      value = value<<2;
-    }
-    return value>>2;
-}
 
 void EMS::process(char* lmer)
 {
@@ -202,4 +178,30 @@ void EMS::editOneTime()
             A1[it->first]= it->second;
         //cout<<"tempmap:"<<it->first<<endl;
     }
+}
+
+char * EMS::convertIntToChar(int input)
+{
+    char value =0;
+    char * p =new char[motif_l];
+    for(int i=0;i<motif_l;i++)
+    {
+        value =  input&0x03;
+        p[motif_l-i-1]  =  chartoIntMap[(char)value];
+        input = input>>2;
+    }
+    return p;
+    //delete [] p;
+    //p=NULL;
+}
+
+int EMS::convertCharToInt(char *input)
+{
+    int value = 0;
+    for(int i =0;i<motif_l;i++)
+    {
+      value += chartoIntMap[input[i]];
+      value = value<<2;
+    }
+    return value>>2;
 }
