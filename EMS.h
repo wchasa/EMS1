@@ -31,7 +31,7 @@ class EMS
     //hashmap* tempmap;
     char* alphabet;
     int alphabetsize;
-    void editOneTime();
+    void editOneTime(int edittimes);
     int mercount;
 };
 #endif

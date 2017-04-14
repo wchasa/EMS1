@@ -92,7 +92,7 @@ void EMS::process(char* lmer)
     oldmap->insert(pair<string,int>(strtxt,-1));
     for(int i =0;i<motif_d;i++)
     {
-        editOneTime();
+        editOneTime(i);
     }
     /*int size = A2.size();
     cout<<"A2 size："<<size<<endl;
@@ -107,7 +107,7 @@ void EMS::process(char* lmer)
 
 }
 
-void EMS::editOneTime()
+void EMS::editOneTime(int edittimes)
 {
     hashmap* tempmap = new hashmap();
     string itstr;
@@ -126,18 +126,18 @@ void EMS::editOneTime()
             {
                 temp = itstr;
                 temp.replace(i,1,1,alphabet[i1]);
-                if((*oldmap)[temp]!=-1)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>i)
                {
-                    tempmap->insert(pair<string,int>(temp,-1));
+                    tempmap->insert(pair<string,int>(temp,edittimes));
              //       cout<<"substitut:"<<temp<<endl;
                }
             }
             //delete
             temp = itstr;
             temp.erase(i,1);
-            if((*oldmap)[temp]!=-1)
+            if((*oldmap)[temp]<=0||(*oldmap)[temp]>i)
             {
-                tempmap->insert(pair<string,int>(temp,-1));
+                tempmap->insert(pair<string,int>(temp,edittimes));
                //  cout<<"delete:"<<temp<<endl;
             }   
             //insert
@@ -145,10 +145,10 @@ void EMS::editOneTime()
             {
                 temp = itstr;
                 temp.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]!=-1)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>i)
                     {
                  //       cout << "insert:" << temp << endl;
-                        tempmap->insert(pair<string,int>(temp,-1));
+                        tempmap->insert(pair<string,int>(temp,edittimes));
                     }
             }
         }
@@ -157,7 +157,7 @@ void EMS::editOneTime()
                 temp = itstr;
                 temp.insert(i,1,alphabet[i1]);
                 if((*oldmap)[temp]!=-1)
-                   tempmap->insert(pair<string,int>(temp,-1));
+                   tempmap->insert(pair<string,int>(temp,edittimes));
         }
     }
     //now element in newmap is become old ,so combine oldmap and newmap
@@ -166,7 +166,7 @@ void EMS::editOneTime()
     {
         (*oldmap)[it->first] = it->second;
         if(A1[it->first]==0)
-            A1[it->first]= it->second;
+            A1[it->first]= -1;
         //cout<<"newmap:"<<it->first<<endl;
     }
     newmap->clear();
@@ -175,7 +175,7 @@ void EMS::editOneTime()
         (*newmap)[it->first] = it->second;
         (*oldmap)[it->first] = it->second;
         if(A1[it->first]==0)
-            A1[it->first]= it->second;
+            A1[it->first]= -1;
         //cout<<"tempmap:"<<it->first<<endl;
     }
 }
