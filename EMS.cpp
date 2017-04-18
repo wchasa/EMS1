@@ -152,7 +152,7 @@ void EMS::editOneTime(int edittimes)
                }
             }
         }
-            //delete
+            //deletess
             if(difd<=motif_d-edittimes)
             {
                 temp = itstr;
