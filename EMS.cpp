@@ -36,9 +36,20 @@ EMS::EMS(const char* filename,int l,int d)
             memcpy(l_mer,StrLine+i,l);   
             process(l_mer);
         } 
-        int size = A2.size();
-        //cout<<"A2 size："<<size<<endl;
-        for(hashmap::iterator it = A1.begin();it!=A1.end();it++)
+        int size = oldmap->size();
+        cout<<"oldmap size："<<size<<endl;
+        hashmap::iterator it2 = oldmap->begin();
+        while(it2!=oldmap->end())
+        {
+           if(it2->first.length()==motif_l && it2->second != -mercount-1 )
+           {
+               it2->second = -mercount-1;
+               A2[it2->first]++;  
+           }
+           it2++;
+        }
+       // cout<<it2->first<<","<<it2->second<<endl;
+    /*    for( hashmap::iterator it = oldmap->begin();it!=oldmap->end();it++)
         {
            if(it->first.length()==motif_l && it->second !=mercount+1 )
            {
@@ -46,7 +57,8 @@ EMS::EMS(const char* filename,int l,int d)
                A2[it->first]++;  
            }
         }
-        A1.clear();
+        */
+        oldmap->clear();
         mercount++;
     }
     int couttotal =0;
@@ -86,10 +98,10 @@ void EMS::process(char* lmer)
     string strtxt((char*)lmer);
     //(*temp)[] = 1;
     newmap->clear();
-    oldmap->clear();
+    //oldmap->clear();
     newmap->insert(pair<string,int>(strtxt,-1));
-    A1.insert(pair<string,int>(strtxt,-1));
-    oldmap->insert(pair<string,int>(strtxt,-1));
+    //A1.insert(pair<string,int>(strtxt,-1));
+    oldmap->insert(pair<string,int>(strtxt,0));
     for(int i =0;i<motif_d;i++)
     {
         editOneTime(i);
@@ -109,6 +121,7 @@ void EMS::process(char* lmer)
 
 void EMS::editOneTime(int edittimes)
 {
+    edittimes++;
     hashmap* tempmap = new hashmap();
     string itstr;
     string temp;
@@ -118,46 +131,68 @@ void EMS::editOneTime(int edittimes)
         int i =0;
         itstr = it->first;
         int itstrLen = itstr.length();
+        int difs = motif_l-itstrLen>0?motif_l-itstrLen:itstrLen-motif_l;
+        int difd = motif_l-itstrLen+1>0?motif_l-itstrLen+1:itstrLen-1-motif_l;
+        int difi = motif_l-itstrLen-1>0?motif_l-itstrLen-1:itstrLen+1-motif_l;
         for(i = 0;i<itstrLen;i++)
         {
 
         //substitut
+        if(difs<=motif_d-edittimes)
+        {
             for(int i1 = 0;i1<alphabetsize;i1++)
             {
                 temp = itstr;
                 temp.replace(i,1,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>i)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
                {
                     tempmap->insert(pair<string,int>(temp,edittimes));
+                    (*oldmap)[temp] =i;
              //       cout<<"substitut:"<<temp<<endl;
                }
             }
+        }
             //delete
-            temp = itstr;
-            temp.erase(i,1);
-            if((*oldmap)[temp]<=0||(*oldmap)[temp]>i)
+            if(difd<=motif_d-edittimes)
             {
-                tempmap->insert(pair<string,int>(temp,edittimes));
-               //  cout<<"delete:"<<temp<<endl;
-            }   
+                temp = itstr;
+                temp.erase(i,1);
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
+                {
+                    tempmap->insert(pair<string,int>(temp,edittimes));
+                    (*oldmap)[temp] =i;
+                //  cout<<"delete:"<<temp<<endl;
+                } 
+            }  
             //insert
+           if(difi<=motif_d-edittimes)
+           { 
+               for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = itstr;
+                    temp.insert(i,1,alphabet[i1]);
+                    if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
+                        {
+                    //       cout << "insert:" << temp << endl;
+                            tempmap->insert(pair<string,int>(temp,edittimes));
+                            (*oldmap)[temp] =i;
+                        }
+                }
+             }
+        }
+        if(difi<motif_d-edittimes)
+        {
             for(int i1 = 0;i1<alphabetsize;i1++)
             {
                 temp = itstr;
                 temp.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>i)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
                     {
                  //       cout << "insert:" << temp << endl;
                         tempmap->insert(pair<string,int>(temp,edittimes));
+                        (*oldmap)[temp] =i;
                     }
             }
-        }
-        for(int i1 = 0;i1<alphabetsize;i1++)
-        {
-                temp = itstr;
-                temp.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]!=-1)
-                   tempmap->insert(pair<string,int>(temp,edittimes));
         }
     }
     //now element in newmap is become old ,so combine oldmap and newmap
@@ -165,8 +200,8 @@ void EMS::editOneTime(int edittimes)
     for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
     {
         (*oldmap)[it->first] = it->second;
-        if(A1[it->first]==0)
-            A1[it->first]= -1;
+        //if(A1[it->first]==0)
+        //    A1[it->first]= -1;
         //cout<<"newmap:"<<it->first<<endl;
     }
     newmap->clear();
@@ -174,8 +209,8 @@ void EMS::editOneTime(int edittimes)
     {
         (*newmap)[it->first] = it->second;
         (*oldmap)[it->first] = it->second;
-        if(A1[it->first]==0)
-            A1[it->first]= -1;
+        //if(A1[it->first]==0)
+        //    A1[it->first]= -1;
         //cout<<"tempmap:"<<it->first<<endl;
     }
 }

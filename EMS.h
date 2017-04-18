@@ -19,7 +19,7 @@ class EMS
     private:
     int motif_l;
     int motif_d;
-    hashmap A1;
+//    hashmap A1;
     hashmap A2;
     map<char,char> chartoIntMap;
     char * convertIntToChar(int input);

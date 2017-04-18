@@ -1,0 +1,13 @@
+剪枝方法
+1. l=6 d=2 time =3.314S 根据编辑次数剪枝，当oldmap[key]的value小于当前的编辑次数时，可以不用插入。此时一个seq中的lmer共用一个oldmap
+
+2. l=6 d=2 time =0.545358s 结果需要的是l长度的key，所以对于delete 2次或者insert的可以剪枝
+oldmap size：10819
+oldmap size：11406
+oldmap size：11511
+oldmap size：11371
+oldmap size：11634
+oldmap size：10926
+oldmap size：11051
+oldmap size：10900
+oldmap size：10891
