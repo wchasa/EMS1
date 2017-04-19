@@ -112,7 +112,7 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.replace(i,1,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0 )
+                if(!eleExist(*oldmap,temp) )
                {
                   // if(strcmp("TTTAGAGA",temp.c_str())==0)
                   //      cout<<"123";
@@ -126,7 +126,7 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.erase(i,1);
-                if((*oldmap)[temp]<=0 )
+                if(!eleExist(*oldmap,temp) )
                 {
                    (*tempmap)[temp] =level;
                 //    (*oldmap)[temp] = level;
@@ -139,7 +139,7 @@ void EMS::editOneTime(int edittimes)
                 {
                     temp = itstr;
                     temp.insert(i,1,alphabet[i1]);
-                    if((*oldmap)[temp]<=0 )
+                    if(!eleExist(*oldmap,temp) )
                         {
                    (*tempmap)[temp] =level;
                  //   (*oldmap)[temp] = level;
@@ -154,7 +154,7 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0 )
+                if(!eleExist(*oldmap,temp) )
                     {
                    (*tempmap)[temp] =level;
                  //   (*oldmap)[temp] = level;
