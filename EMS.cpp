@@ -99,7 +99,7 @@ void EMS::process(char* lmer)
     //(*temp)[] = 1;
     newmap->clear();
     //oldmap->clear();
-    newmap->insert(pair<string,int>(strtxt,-1));
+    newmap->insert(pair<string,int>(strtxt,0));
     //A1.insert(pair<string,int>(strtxt,-1));
     oldmap->insert(pair<string,int>(strtxt,0));
     for(int i =0;i<motif_d;i++)
@@ -147,7 +147,7 @@ void EMS::editOneTime(int edittimes)
                 if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
                {
                     tempmap->insert(pair<string,int>(temp,edittimes));
-                    (*oldmap)[temp] =i;
+                  //  (*oldmap)[temp] =edittimes;
              //       cout<<"substitut:"<<temp<<endl;
                }
             }
@@ -160,7 +160,7 @@ void EMS::editOneTime(int edittimes)
                 if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
                 {
                     tempmap->insert(pair<string,int>(temp,edittimes));
-                    (*oldmap)[temp] =i;
+                   // (*oldmap)[temp] =edittimes;
                 //  cout<<"delete:"<<temp<<endl;
                 } 
             }  
@@ -175,12 +175,12 @@ void EMS::editOneTime(int edittimes)
                         {
                     //       cout << "insert:" << temp << endl;
                             tempmap->insert(pair<string,int>(temp,edittimes));
-                            (*oldmap)[temp] =i;
+                          //  (*oldmap)[temp] =edittimes;
                         }
                 }
              }
         }
-        if(difi<motif_d-edittimes)
+        if(difi<=motif_d-edittimes)
         {
             for(int i1 = 0;i1<alphabetsize;i1++)
             {
@@ -190,7 +190,7 @@ void EMS::editOneTime(int edittimes)
                     {
                  //       cout << "insert:" << temp << endl;
                         tempmap->insert(pair<string,int>(temp,edittimes));
-                        (*oldmap)[temp] =i;
+                        //(*oldmap)[temp] =edittimes;
                     }
             }
         }
