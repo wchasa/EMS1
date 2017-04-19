@@ -8,20 +8,12 @@ EMS::EMS(const char* filename,int l,int d)
     int sizeofA = (int)pow(4,l);
     motif_l = l;
     motif_d = d;
-    //test char* str = "ACCGTC";
-    //int ivalue = convertCharToInt(str);
-    //char* re  = convertIntToChar(ivalue);
-    //cout<<re<<endl;
-   // A1 = new int[sizeofA];
-   // A2 = new int[sizeofA];
-    //memset(A1,sizeofA,-1);
-    //memset(A2,sizeofA,0);
     char *l_mer = new char[l];
     FILE *fp;
     char StrLine[1024],StrLineFM[1024];
     if((fp = fopen(filename,"r")) == NULL)      //判断文件是否存在及可读  
     {   
-        //cout<<filename2<<"Open Failed"<<endl;
+        cout<<filename<<"Open Failed"<<endl;
         return ;   
     }   
     while (!feof(fp))    
@@ -48,16 +40,6 @@ EMS::EMS(const char* filename,int l,int d)
            }
            it2++;
         }
-       // cout<<it2->first<<","<<it2->second<<endl;
-    /*    for( hashmap::iterator it = oldmap->begin();it!=oldmap->end();it++)
-        {
-           if(it->first.length()==motif_l && it->second !=mercount+1 )
-           {
-               it->second =mercount+1;
-               A2[it->first]++;  
-           }
-        }
-        */
         oldmap->clear();
         mercount++;
     }
@@ -96,32 +78,19 @@ void EMS::init()
 void EMS::process(char* lmer)
 {
     string strtxt((char*)lmer);
-    //(*temp)[] = 1;
     newmap->clear();
-    //oldmap->clear();
-    newmap->insert(pair<string,int>(strtxt,0));
-    //A1.insert(pair<string,int>(strtxt,-1));
-    oldmap->insert(pair<string,int>(strtxt,0));
+    newmap->insert(pair<string,int>(strtxt,1));
+    oldmap->insert(pair<string,int>(strtxt,1));
     for(int i =0;i<motif_d;i++)
     {
         editOneTime(i);
     }
-    /*int size = A2.size();
-    cout<<"A2 size："<<size<<endl;
-    for(hashmap::iterator it = A1.begin();it!=A1.end();it++)
-    {
-        if(it->first.length()==motif_l && it->second !=mercount+1 )
-        {
-            it->second =mercount+1;
-            A2[it->first]++;  
-        }
-    }*/
-
 }
 
 void EMS::editOneTime(int edittimes)
 {
     edittimes++;
+    int level = edittimes+1;
     hashmap* tempmap = new hashmap();
     string itstr;
     string temp;
@@ -144,11 +113,12 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.replace(i,1,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
                {
-                    tempmap->insert(pair<string,int>(temp,edittimes));
-                  //  (*oldmap)[temp] =edittimes;
-             //       cout<<"substitut:"<<temp<<endl;
+                  // if(strcmp("TTTAGAGA",temp.c_str())==0)
+                  //      cout<<"123";
+                   (*tempmap)[temp] =level;
+                    (*oldmap)[temp] = level;
                }
             }
         }
@@ -157,11 +127,10 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.erase(i,1);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
                 {
-                    tempmap->insert(pair<string,int>(temp,edittimes));
-                   // (*oldmap)[temp] =edittimes;
-                //  cout<<"delete:"<<temp<<endl;
+                   (*tempmap)[temp] =level;
+                    (*oldmap)[temp] = level;
                 } 
             }  
             //insert
@@ -171,47 +140,40 @@ void EMS::editOneTime(int edittimes)
                 {
                     temp = itstr;
                     temp.insert(i,1,alphabet[i1]);
-                    if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
+                    if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
                         {
-                    //       cout << "insert:" << temp << endl;
-                            tempmap->insert(pair<string,int>(temp,edittimes));
-                          //  (*oldmap)[temp] =edittimes;
+                   (*tempmap)[temp] =level;
+                    (*oldmap)[temp] = level;
                         }
                 }
              }
         }
+        //insert at last pos
         if(difi<=motif_d-edittimes)
         {
             for(int i1 = 0;i1<alphabetsize;i1++)
             {
                 temp = itstr;
                 temp.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=edittimes)
+                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
                     {
-                 //       cout << "insert:" << temp << endl;
-                        tempmap->insert(pair<string,int>(temp,edittimes));
-                        //(*oldmap)[temp] =edittimes;
+                   (*tempmap)[temp] =level;
+                    (*oldmap)[temp] = level;
                     }
             }
         }
     }
-    //now element in newmap is become old ,so combine oldmap and newmap
+    //now element in newmap become old ,so combine oldmap and newmap
     //and set tempmap as newmap
-    for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
-    {
-        (*oldmap)[it->first] = it->second;
-        //if(A1[it->first]==0)
-        //    A1[it->first]= -1;
-        //cout<<"newmap:"<<it->first<<endl;
-    }
+    //for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
+    //{
+    //    (*oldmap)[it->first] = it->second;
+    //}
     newmap->clear();
     for(hashmap::iterator it = tempmap->begin();it!=tempmap->end();it++)
     {
         (*newmap)[it->first] = it->second;
         (*oldmap)[it->first] = it->second;
-        //if(A1[it->first]==0)
-        //    A1[it->first]= -1;
-        //cout<<"tempmap:"<<it->first<<endl;
     }
 }
 
@@ -226,8 +188,6 @@ char * EMS::convertIntToChar(int input)
         input = input>>2;
     }
     return p;
-    //delete [] p;
-    //p=NULL;
 }
 
 int EMS::convertCharToInt(char *input)
@@ -239,4 +199,12 @@ int EMS::convertCharToInt(char *input)
       value = value<<2;
     }
     return value>>2;
+}
+bool EMS::eleExist(hashmap map,string key)
+{
+   hashmap::iterator it = map.find(key);
+   if (it != map.end())
+    return true;
+else
+    return false;
 }

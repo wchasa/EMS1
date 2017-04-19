@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/test",
-            "args": ["./yst03r.fasta" "6" "2"],
+            "args": ["./yst03r.fasta" "8" "2"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],

@@ -33,5 +33,6 @@ class EMS
     int alphabetsize;
     void editOneTime(int edittimes);
     int mercount;
+    bool eleExist(hashmap map,string key);
 };
 #endif
