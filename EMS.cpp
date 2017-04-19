@@ -112,12 +112,12 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.replace(i,1,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
+                if((*oldmap)[temp]<=0 )
                {
                   // if(strcmp("TTTAGAGA",temp.c_str())==0)
                   //      cout<<"123";
                    (*tempmap)[temp] =level;
-                    (*oldmap)[temp] = level;
+                   // (*oldmap)[temp] = level;
                }
             }
         }
@@ -126,10 +126,10 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.erase(i,1);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
+                if((*oldmap)[temp]<=0 )
                 {
                    (*tempmap)[temp] =level;
-                    (*oldmap)[temp] = level;
+                //    (*oldmap)[temp] = level;
                 } 
             }  
             //insert
@@ -139,10 +139,10 @@ void EMS::editOneTime(int edittimes)
                 {
                     temp = itstr;
                     temp.insert(i,1,alphabet[i1]);
-                    if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
+                    if((*oldmap)[temp]<=0 )
                         {
                    (*tempmap)[temp] =level;
-                    (*oldmap)[temp] = level;
+                 //   (*oldmap)[temp] = level;
                         }
                 }
              }
@@ -154,20 +154,17 @@ void EMS::editOneTime(int edittimes)
             {
                 temp = itstr;
                 temp.insert(i,1,alphabet[i1]);
-                if((*oldmap)[temp]<=0||(*oldmap)[temp]>=level)
+                if((*oldmap)[temp]<=0 )
                     {
                    (*tempmap)[temp] =level;
-                    (*oldmap)[temp] = level;
+                 //   (*oldmap)[temp] = level;
                     }
             }
         }
     }
     //now element in newmap become old ,so combine oldmap and newmap
     //and set tempmap as newmap
-    //for(hashmap::iterator it = newmap->begin();it!=newmap->end();it++)
-    //{
-    //    (*oldmap)[it->first] = it->second;
-    //}
+
     newmap->clear();
     for(hashmap::iterator it = tempmap->begin();it!=tempmap->end();it++)
     {
