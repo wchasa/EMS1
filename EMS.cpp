@@ -26,30 +26,33 @@ EMS::EMS(const char* filename,int l,int d)
         for(int i =0;i<len+1-l;i++)
         {
             memcpy(l_mer,StrLine+i,l);   
-            process(l_mer);
+            newmap->insert(pair<string,int>(l_mer,1));
+            oldmap->insert(pair<string,int>(l_mer,1));
+            //process(l_mer);
         } 
+        process();
         int size = oldmap->size();
         cout<<"oldmap size："<<size<<endl;
         hashmap::iterator it2 = oldmap->begin();
         while(it2!=oldmap->end())
         {
-           if(it2->first.length()==motif_l && it2->second != -mercount-1 )
+           if(it2->first.length()==motif_l)
            {
-               it2->second = -mercount-1;
                A2[it2->first]++;  
            }
            it2++;
         }
+        newmap->clear();
         oldmap->clear();
         mercount++;
     }
     int couttotal =0;
-   // cout<<"A2 size :"<<A2.size()<<endl;
+    //cout<<"A2 size :"<<A2.size()<<endl;
       for(hashmap::iterator it = A2.begin();it!=A2.end();it++)
      {
          if(it->second == mercount)
          {
-            cout<<"motif:"<<it->first<<endl;
+        //    cout<<"motif:"<<it->first<<endl;
             couttotal++;
          }
      }
@@ -75,12 +78,8 @@ void EMS::init()
 }
 
 
-void EMS::process(char* lmer)
+void EMS::process()
 {
-    string strtxt((char*)lmer);
-    newmap->clear();
-    newmap->insert(pair<string,int>(strtxt,1));
-    oldmap->insert(pair<string,int>(strtxt,1));
     for(int i =0;i<motif_d;i++)
     {
         editOneTime(i);

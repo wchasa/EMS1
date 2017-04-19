@@ -11,3 +11,70 @@ oldmap size：10926
 oldmap size：11051
 oldmap size：10900
 oldmap size：10891
+
+--------------------------------
+6 2
+oldmap size：11307
+oldmap size：11977
+oldmap size：12064
+oldmap size：11948
+oldmap size：12213
+oldmap size：11437
+oldmap size：11601
+oldmap size：11416
+oldmap size：11408
+4089
+处理时间：0.346357s
+
+7 2
+oldmap size：27296
+oldmap size：28030
+oldmap size：28340
+oldmap size：27991
+oldmap size：28396
+oldmap size：27311
+oldmap size：27404
+oldmap size：27277
+oldmap size：27236
+14843
+处理时间：0.801521s
+
+8 2
+oldmap size：66766
+oldmap size：70984
+oldmap size：71910
+oldmap size：69691
+oldmap size：71626
+oldmap size：67180
+oldmap size：67997
+oldmap size：65515
+oldmap size：65402
+24534
+处理时间：1.95495s
+
+9 2
+oldmap size：137228
+oldmap size：146966
+oldmap size：151941
+oldmap size：147212
+oldmap size：151767
+oldmap size：139297
+oldmap size：138186
+oldmap size：136332
+oldmap size：136037
+8855
+处理时间：3.85757s
+
+
+10 2
+oldmap size：224555
+oldmap size：231031
+oldmap size：242944
+oldmap size：236466
+oldmap size：242348
+oldmap size：225688
+oldmap size：219849
+oldmap size：225761
+oldmap size：225129
+673
+处理时间：7.3384s

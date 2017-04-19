@@ -25,7 +25,7 @@ class EMS
     char * convertIntToChar(int input);
     int convertCharToInt(char *input);
     void init();
-    void process(char* lmer);
+    void process();
     hashmap* newmap;
     hashmap* oldmap;
     //hashmap* tempmap;
