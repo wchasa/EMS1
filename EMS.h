@@ -7,18 +7,19 @@
 #include <math.h>
 #include <unordered_map>
 #include <map>
+#include <unistd.h>
 using namespace std;
-
-typedef std::unordered_map<string,int> hashmap;
-typedef std::pair<string,int> hashpair;
+typedef char i8;
+typedef std::unordered_map<string,i8> hashmap;
+typedef std::pair<string,i8> hashpair;
 class EMS
 {
     public:
  //   EMS();
-    EMS(const char* filename,int l,int d);
+    EMS(const char* filename,i8 l,i8 d);
     private:
-    int motif_l;
-    int motif_d;
+    i8 motif_l;
+    i8 motif_d;
 //    hashmap A1;
     hashmap A2;
     map<char,char> chartoIntMap;
@@ -31,8 +32,8 @@ class EMS
     //hashmap* tempmap;
     char* alphabet;
     int alphabetsize;
-    void editOneTime(int edittimes);
-    int mercount;
+    void editOneTime(i8 edittimes);
+    i8 mercount;
     bool eleExist(hashmap map,string key);
 };
 #endif

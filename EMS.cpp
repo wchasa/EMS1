@@ -1,11 +1,12 @@
 #include "EMS.h"
 
 using namespace std;
-EMS::EMS(const char* filename,int l,int d)
+EMS::EMS(const char* filename,i8 l,i8 d)
 {
+    int numberofthread = 4;
     mercount =0;
     init();
-    int sizeofA = (int)pow(4,l);
+    //int sizeofA = (int)pow(4,l);
     motif_l = l;
     motif_d = d;
     char *l_mer = new char[l];
@@ -23,11 +24,19 @@ EMS::EMS(const char* filename,int l,int d)
             continue;
         StrLine[strlen(StrLine)-2]='\0';// 最后有\r\n;
         int len =strlen(StrLine);
+        //add parrel
+        /*i8 *shmaddr;
+	    pid_t *fpid = new pid_t[10];
+	    pid_t mainpid = getpid();
+        int modvalue = len % numberOfthread;
+        int shmid;
+	    shmid = shmget(IPC_PRIVATE, num * sizeof(i64), IPC_CREAT | 0600);*/
+        //
         for(int i =0;i<len+1-l;i++)
         {
             memcpy(l_mer,StrLine+i,l);   
             process(l_mer);
-        } 
+        }
         int size = oldmap->size();
         cout<<"oldmap size："<<size<<endl;
         hashmap::iterator it2 = oldmap->begin();
@@ -55,7 +64,15 @@ EMS::EMS(const char* filename,int l,int d)
      }
      cout<<couttotal<<endl;
     delete [] l_mer;
-    
+    l_mer = NULL;
+    delete[] alphabet ;
+    alphabet = NULL;
+    oldmap->clear();
+    delete oldmap;
+    oldmap=NULL;
+    newmap->clear();
+    delete newmap;
+    newmap=NULL;
 }
 void EMS::init()
 {
@@ -67,7 +84,7 @@ void EMS::init()
     alphabet[1] ='C';
     alphabet[2] ='G';
     alphabet[3] ='T';
-    for(int i = 0;i<alphabetsize;i++)
+    for(i8 i = 0;i<alphabetsize;i++)
     {
         chartoIntMap.insert(pair<char,char>((char)i,alphabet[i]));
         chartoIntMap.insert(pair<char,char>(alphabet[i],(char)i));
@@ -81,16 +98,16 @@ void EMS::process(char* lmer)
     newmap->clear();
     newmap->insert(pair<string,int>(strtxt,1));
     oldmap->insert(pair<string,int>(strtxt,1));
-    for(int i =0;i<motif_d;i++)
+    for(i8 i =0;i<motif_d;i++)
     {
         editOneTime(i);
     }
 }
 
-void EMS::editOneTime(int edittimes)
+void EMS::editOneTime(i8 edittimes)
 {
     edittimes++;
-    int level = edittimes+1;
+    i8 level = edittimes+1;
     hashmap* tempmap = new hashmap();
     string itstr;
     string temp;
@@ -175,6 +192,9 @@ void EMS::editOneTime(int edittimes)
         (*newmap)[it->first] = it->second;
         (*oldmap)[it->first] = it->second;
     }
+    tempmap->clear();
+    delete tempmap;
+    tempmap=NULL;
 }
 
 char * EMS::convertIntToChar(int input)
