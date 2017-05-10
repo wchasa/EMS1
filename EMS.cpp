@@ -32,11 +32,22 @@ EMS::EMS(const char* filename,i8 l,i8 d)
         int shmid;
 	    shmid = shmget(IPC_PRIVATE, num * sizeof(i64), IPC_CREAT | 0600);*/
         //
-        for(int i =0;i<len+1-l;i++)
+        //int dd =motif_d;
+        int dd =0;
+        for(int j = dd;j>=-dd;j--)
+            for(int i =0;i<len+1-l+j;i++)
+            {
+               
+                memcpy(l_mer,StrLine+i,l-j);
+                l_mer[l-j]='\0';
+                
+                process(l_mer);
+            }
+ /*       for(int i =0;i<len+1-l;i++)
         {
             memcpy(l_mer,StrLine+i,l);   
             process(l_mer);
-        }
+        }*/
         int size = oldmap->size();
         cout<<"oldmap size："<<size<<endl;
         hashmap::iterator it2 = oldmap->begin();

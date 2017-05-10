@@ -1,1 +1,1 @@
-./test ./yst03r.fasta 8 2
+./test.out ./yst03r.fasta 6 2

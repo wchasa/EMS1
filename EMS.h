@@ -10,14 +10,25 @@
 #include <unistd.h>
 using namespace std;
 typedef char i8;
-typedef std::unordered_map<string,i8> hashmap;
+typedef std::map<string,i8> hashmap;
 typedef std::pair<string,i8> hashpair;
+/*class mymap
+{
+public:
+    mymap(int motifl);
+    void insert(string,i8);
+
+private:
+    int stelen;
+    vector<i8> values;
+};
+*/
 class EMS
 {
-    public:
+public:
  //   EMS();
     EMS(const char* filename,i8 l,i8 d);
-    private:
+private:
     i8 motif_l;
     i8 motif_d;
 //    hashmap A1;
