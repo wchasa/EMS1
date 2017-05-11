@@ -1,5 +1,5 @@
 import os
-L = range(6,11)
+L = range(6,6)
 #print L
 D = [2,3]
 #print D
@@ -11,7 +11,7 @@ for l in L:
     os.system(cmd+" > " +savefile)
 #cmd = "./test /home/wch/codebase/EMS1/planted_l16_d3.txt 11 3"
 #savefile = "./result_11_3_fix.txt"
-cmd = "./test /home/wch/codebase/EMS1/planted_l16_d3.txt 11 3"
+cmd = "./test.out /home/wch/codebase/EMS1/planted_l16_d3.txt 11 3"
 savefile = "./result_11_3_fix2.txt"
 print cmd
 print savefile

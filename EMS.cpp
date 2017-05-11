@@ -30,7 +30,6 @@ EMS::EMS(const char* filename,i8 l,i8 d)
         for(int j = dd;j>=-dd;j--)
             for(int i =0;i<len+1-l+j;i++)
             {
-               
                 memcpy(l_mer,StrLine+i,l-j);
                 l_mer[l-j]='\0';
                 string strtxt((char*)l_mer);
@@ -129,6 +128,7 @@ void EMS::process(string& strtxt,int edittimes,char oper)
 {
     //string strtxt((char*)lmer);
     int len = strtxt.length();
+  //  cout<<"---"<<len<<endl;
     string temp;
     int i = 0;
     //if((oper=='n'||oper=='s')&&(edittimes&0x1))&&motif_l=l)
@@ -138,9 +138,10 @@ void EMS::process(string& strtxt,int edittimes,char oper)
     {
         if(edittimes&0x1)
         {
-            if(oper=='s'||oper=='n')
+            if(oper=='n')
             {
-                //sub
+           //     cout<<"s";
+           //sub
             for(i = 0;i<len;i++) 
                 for(int i1 = 0;i1<alphabetsize;i1++)
                 {
@@ -148,13 +149,33 @@ void EMS::process(string& strtxt,int edittimes,char oper)
                     temp.replace(i,1,1,alphabet[i1]);
                     process(temp,edittimes-1,'s');
                 }
-        
+            
+            }
+            else
+            {
+                //sub
+                for(i = 0;i<len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.replace(i,1,1,alphabet[i1]);
+                    process(temp,edittimes-1,'s');
+                }
+                //del
+              /*   for(i = 0;i<len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.   (i,1);
+                    process(temp,edittimes-1,'d');
+                }
+                */
             }
            
         }
         else
         {
-            if(oper=='s'||oper=='n')
+            //if(oper=='s'||oper=='n')
             {
                 //sub
                 for(i = 0;i<len;i++) 

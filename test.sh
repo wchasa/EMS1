@@ -1,1 +1,1 @@
-./test.out ./planted_l16_d3.txt 6 2
+./test.out ./planted_l16_d3.txt 11 3
