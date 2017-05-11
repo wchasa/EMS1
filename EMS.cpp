@@ -4,11 +4,12 @@ using namespace std;
 EMS::EMS(const char* filename,i8 l,i8 d)
 {
     int numberofthread = 4;
-    mercount =0;
-    init();
+    mercount =1;
+    
     //int sizeofA = (int)pow(4,l);
     motif_l = l;
     motif_d = d;
+    init();
     char *l_mer = new char[l];
     FILE *fp;
     char StrLine[1024],StrLineFM[1024];
@@ -24,34 +25,27 @@ EMS::EMS(const char* filename,i8 l,i8 d)
             continue;
         StrLine[strlen(StrLine)-2]='\0';// 最后有\r\n;
         int len =strlen(StrLine);
-        //add parrel
-        /*i8 *shmaddr;
-	    pid_t *fpid = new pid_t[10];
-	    pid_t mainpid = getpid();
-        int modvalue = len % numberOfthread;
-        int shmid;
-	    shmid = shmget(IPC_PRIVATE, num * sizeof(i64), IPC_CREAT | 0600);*/
-        //
-        //int dd =motif_d;
-        int dd =0;
+        int dd =motif_d;
+        //int dd =0;
         for(int j = dd;j>=-dd;j--)
             for(int i =0;i<len+1-l+j;i++)
             {
                
                 memcpy(l_mer,StrLine+i,l-j);
                 l_mer[l-j]='\0';
-                
-                process(l_mer);
+                string strtxt((char*)l_mer);
+                process(strtxt,motif_d,'n');
             }
+
  /*       for(int i =0;i<len+1-l;i++)
         {
             memcpy(l_mer,StrLine+i,l);   
             process(l_mer);
         }*/
-        int size = oldmap->size();
-        cout<<"oldmap size："<<size<<endl;
-        hashmap::iterator it2 = oldmap->begin();
-        while(it2!=oldmap->end())
+       // int size = oldmap->size();
+       // cout<<"oldmap size："<<size<<endl;
+        //hashmap::iterator it2 = oldmap->begin();
+        /*while(it2!=oldmap->end())
         {
            if(it2->first.length()==motif_l && it2->second != -mercount-1 )
            {
@@ -59,36 +53,64 @@ EMS::EMS(const char* filename,i8 l,i8 d)
                A2[it2->first]++;  
            }
            it2++;
-        }
-        oldmap->clear();
+        }*/
+       // oldmap->clear();
         mercount++;
     }
     int couttotal =0;
+    Alength = (long long int)1 << (2*motif_l);
+    //cout<<Alength<<endl;
+        for(i64 i = 0;i<Alength;i++)
+        {
+            //cout<<i;
+            if(A2[i]==mercount-1)
+            {
+                cout<<"motif:"<<convertIntToChar(i)<<endl;
+                couttotal++;
+            }
+        }
+    
    // cout<<"A2 size :"<<A2.size()<<endl;
-      for(hashmap::iterator it = A2.begin();it!=A2.end();it++)
+  /*    for(hashmap::iterator it = A2.begin();it!=A2.end();it++)
      {
          if(it->second == mercount)
          {
             cout<<"motif:"<<it->first<<endl;
             couttotal++;
          }
-     }
-     cout<<couttotal<<endl;
+     }*/
+
+
+    cout<<couttotal<<endl;
     delete [] l_mer;
     l_mer = NULL;
     delete[] alphabet ;
     alphabet = NULL;
-    oldmap->clear();
+    /*oldmap->clear();        //add parrel
+        /*i8 *shmaddr;
+	    pid_t *fpid = new pid_t[10];
+	    pid_t mainpid = getpid();
+        int modvalue = len % numberOfthread;
+        int shmid;
+	    shmid = shmget(IPC_PRIVATE, num * sizeof(i64), IPC_CREAT | 0600);*/
+        //
+        /*
     delete oldmap;
     oldmap=NULL;
     newmap->clear();
     delete newmap;
     newmap=NULL;
+    */
 }
 void EMS::init()
 {
-    newmap = new hashmap();
-    oldmap = new hashmap();
+    long long int Alength =(long long int)1 << (2*motif_l); 
+    A1 = new i8[Alength];
+    A2 = new i8[Alength];
+    memset(A1, 0, Alength*sizeof(i8));
+    memset(A2, 0, Alength*sizeof(i8));
+   // newmap = new hashmap();
+    //oldmap = new hashmap();
     alphabetsize = 4;
     alphabet = new char[alphabetsize];
     alphabet[0] ='A';
@@ -101,9 +123,96 @@ void EMS::init()
         chartoIntMap.insert(pair<char,char>(alphabet[i],(char)i));
     }
 }
+//oper i =insert s = sub d =delete n =no operate
 
+void EMS::process(string& strtxt,int edittimes,char oper)
+{
+    //string strtxt((char*)lmer);
+    int len = strtxt.length();
+    string temp;
+    int i = 0;
+    //if((oper=='n'||oper=='s')&&(edittimes&0x1))&&motif_l=l)
+    if(edittimes>0)
+    {
+    if(motif_l == len)
+    {
+        if(edittimes&0x1)
+        {
+            if(oper=='s'||oper=='n')
+            {
+                //sub
+            for(i = 0;i<len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.replace(i,1,1,alphabet[i1]);
+                    process(temp,edittimes-1,'s');
+                }
+        
+            }
+           
+        }
+        else
+        {
+            if(oper=='s'||oper=='n')
+            {
+                //sub
+                for(i = 0;i<len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.replace(i,1,1,alphabet[i1]);
+                    process(temp,edittimes-1,'s');
+                }
+                //del
+                 for(i = 0;i<len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.erase(i,1);
+                    process(temp,edittimes-1,'d');
+                }
+                
+            }
+        }
 
-void EMS::process(char* lmer)
+    }
+    else if(motif_l > len)
+    {
+        //insert
+          for(i = 0;i<=len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.insert(i,1,alphabet[i1]);
+                    process(temp,edittimes-1,'i');
+                }        
+    }
+    else if(motif_l < len)
+    {
+        //del
+          for(i = 0;i<=len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.erase(i,1);
+                    process(temp,edittimes-1,'d');
+                }        
+    }
+}
+    else if(len == motif_l)
+    {
+        int idx = convertCharToInt(strtxt.data());
+       // cout<<mercount<<endl;
+        if (A1[idx] != mercount) 
+        {
+            A1[idx] = mercount;
+            A2[idx]++;
+        }
+    }
+}
+
+/*void EMS::process(char* lmer)
 {
     string strtxt((char*)lmer);
     newmap->clear();
@@ -113,8 +222,11 @@ void EMS::process(char* lmer)
     {
         editOneTime(i);
     }
+    /
+    //Edit(string &str,)
 }
-
+*/
+/*
 void EMS::editOneTime(i8 edittimes)
 {
     edittimes++;
@@ -207,21 +319,28 @@ void EMS::editOneTime(i8 edittimes)
     delete tempmap;
     tempmap=NULL;
 }
-
-char * EMS::convertIntToChar(int input)
+*/
+string EMS::convertIntToChar(int input)
 {
     char value =0;
-    char * p =new char[motif_l];
+    string str;
+  //  char * p =new char[motif_l+1];
+  //  cout<<"motifl:"<<((int)motif_l)<<endl;
     for(int i=0;i<motif_l;i++)
     {
         value =  input&0x03;
-        p[motif_l-i-1]  =  chartoIntMap[(char)value];
+        str.insert(0,1,chartoIntMap[(char)value]);
+        //p[motif_l-i-1]  =  chartoIntMap[(char)value];
         input = input>>2;
     }
-    return p;
+    //p[motif_l] ='\0';
+   // string str((char*)p);
+   // delete []p;
+   // cout<<"strlen:"<<str.length()<<endl;
+    return str;
 }
 
-int EMS::convertCharToInt(char *input)
+int EMS::convertCharToInt(const char *input)
 {
     int value = 0;
     for(int i =0;i<motif_l;i++)
@@ -231,6 +350,16 @@ int EMS::convertCharToInt(char *input)
     }
     return value>>2;
 }
+/*int EMS::convertCharToInt(string input)
+{
+    int value = 0;
+    for(int i =0;i<str.length();i++)
+    {
+      value += chartoIntMap[input[i]];
+      value = value<<2;
+    }
+    return value>>2;
+}*/
 bool EMS::eleExist(hashmap map,string key)
 {
    hashmap::iterator it = map.find(key);

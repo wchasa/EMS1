@@ -5,4 +5,4 @@ my_fm:EMS.o
 %.o:%.cpp *.h
 	$(CC) -c  $(CFLAGS) $< -o $@
 clean:
-	rm EMS.o gmon.out
+	rm *.o gmon.out

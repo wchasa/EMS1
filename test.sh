@@ -1,1 +1,1 @@
-./test.out ./yst03r.fasta 6 2
+./test.out ./planted_l16_d3.txt 6 2

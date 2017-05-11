@@ -4,5 +4,10 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-age	../test.py	/^age = 11$/;"	kind:variable	line:1
+D	../test.py	/^D = [2,3]$/;"	kind:variable	line:4
+L	../test.py	/^L = range(6,6)$/;"	kind:variable	line:2
+cmd	../test.py	/^    cmd = ".\/test.out \/home\/wch\/codebase\/EMS1\/planted_l16_d3.txt "+ str(l) +' 2'$/;"	kind:variable	line:7
+cmd	../test.py	/^cmd = ".\/test \/home\/wch\/codebase\/EMS1\/planted_l16_d3.txt 11 3"$/;"	kind:variable	line:14
+savefile	../test.py	/^    savefile = ".\/result_" + str(l) +'_2_fix.txt'$/;"	kind:variable	line:8
+savefile	../test.py	/^savefile = ".\/result_11_3_fix2.txt"$/;"	kind:variable	line:15
 test.py	../test.py	1;"	kind:file	line:1

@@ -1,5 +1,5 @@
 import os
-L = range(6,6)
+L = range(6,11)
 #print L
 D = [2,3]
 #print D
