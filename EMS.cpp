@@ -5,7 +5,7 @@ EMS::EMS(const char* filename,i8 l,i8 d)
 {
     int numberofthread = 4;
     mercount =1;
-    
+    vector<string> oper;
     //int sizeofA = (int)pow(4,l);
     motif_l = l;
     motif_d = d;
@@ -17,7 +17,12 @@ EMS::EMS(const char* filename,i8 l,i8 d)
     {   
         cout<<filename<<"Open Failed"<<endl;
         return ;   
-    }   
+    }
+    for(int j = motif_d;j>=-motif_d;j--)
+    {
+        auto vv = gen(l-j);
+        opermap.insert(hashpair(j,vv));
+    }
     while (!feof(fp))    
     {
         fgets(StrLine,1024,fp);
@@ -28,32 +33,24 @@ EMS::EMS(const char* filename,i8 l,i8 d)
         int dd =motif_d;
         //int dd =0;
         for(int j = dd;j>=-dd;j--)
+        {
+            std::vector<string>::iterator it;
+            it = oper.begin();
+            int diff = j;
+            int k=0;
+            int bucket = (motif_d-j)/2;
+            string strtemp;
+            auto vv = opermap[j];
             for(int i =0;i<len+1-l+j;i++)
             {
                 memcpy(l_mer,StrLine+i,l-j);
                 l_mer[l-j]='\0';
                 string strtxt((char*)l_mer);
-                process(strtxt,motif_d,'n');
+                for(string op : vv)
+                newprocess(strtxt,motif_d,op);
+              //  process(strtxt,motif_d,'n');
             }
-
- /*       for(int i =0;i<len+1-l;i++)
-        {
-            memcpy(l_mer,StrLine+i,l);   
-            process(l_mer);
-        }*/
-       // int size = oldmap->size();
-       // cout<<"oldmap size："<<size<<endl;
-        //hashmap::iterator it2 = oldmap->begin();
-        /*while(it2!=oldmap->end())
-        {
-           if(it2->first.length()==motif_l && it2->second != -mercount-1 )
-           {
-               it2->second = -mercount-1;
-               A2[it2->first]++;  
-           }
-           it2++;
-        }*/
-       // oldmap->clear();
+        }
         mercount++;
     }
     int couttotal =0;
@@ -68,38 +65,78 @@ EMS::EMS(const char* filename,i8 l,i8 d)
                 couttotal++;
             }
         }
-    
-   // cout<<"A2 size :"<<A2.size()<<endl;
-  /*    for(hashmap::iterator it = A2.begin();it!=A2.end();it++)
-     {
-         if(it->second == mercount)
-         {
-            cout<<"motif:"<<it->first<<endl;
-            couttotal++;
-         }
-     }*/
-
-
     cout<<couttotal<<endl;
     delete [] l_mer;
     l_mer = NULL;
     delete[] alphabet ;
     alphabet = NULL;
-    /*oldmap->clear();        //add parrel
-        /*i8 *shmaddr;
-	    pid_t *fpid = new pid_t[10];
-	    pid_t mainpid = getpid();
-        int modvalue = len % numberOfthread;
-        int shmid;
-	    shmid = shmget(IPC_PRIVATE, num * sizeof(i64), IPC_CREAT | 0600);*/
-        //
-        /*
-    delete oldmap;
-    oldmap=NULL;
-    newmap->clear();
-    delete newmap;
-    newmap=NULL;
-    */
+}
+vector<string> EMS::gen(int nl)
+{
+    vector<string> oper;
+    if(nl-motif_l==motif_d)
+    {
+        string str(motif_d,'d');
+        oper.insert(oper.begin(),str);
+        cout<<str;
+        return oper;
+    }
+    else if(motif_l-nl==motif_d)
+    {
+        string str(motif_d,'i');
+        oper.insert(oper.begin(),str);
+        return oper;
+    }
+    else 
+    {
+        if(nl-motif_l>0)//need d
+            {
+                
+                int di =(motif_d-(nl-motif_l))/2;
+                if(di==0)
+                {
+                    string str;
+                    str.insert(0,nl-motif_l,'d');
+                    str.insert(0,1,'s');
+                    oper.insert(oper.begin(),str);
+                }
+                else 
+                for(int i =0 ;i<di+1;i++)
+                {
+                    string str;
+                    str.insert(0,i,'d');
+                    str.insert(0,motif_d-str.length(),'d');
+                    str.insert(0,(di-i)*2,'s');
+                    str.insert(0,i,'i');
+                    oper.insert(oper.begin(),str);
+                }
+
+            }
+        if(motif_l-nl>=0)//need i
+            {   
+                int di =(motif_d-(motif_l-nl))/2;
+                if(di==0)
+                {
+                    string str;
+                    str.insert(0,motif_l-nl,'i');
+                    str.insert(0,1,'s');
+                    oper.insert(oper.begin(),str);
+                }
+                else 
+                for(int i =0 ;i<di+1;i++)
+                {
+                    string str;
+                    str.insert(0,i,'d');
+                    str.insert(0,(di-i)*2,'s');
+                    str.insert(0,i,'i');
+                    str.insert(0,motif_d-str.length(),'i');
+                    oper.insert(oper.begin(),str);
+                }
+
+            }
+    }
+    return oper;
+        
 }
 void EMS::init()
 {
@@ -123,7 +160,58 @@ void EMS::init()
     }
 }
 //oper i =insert s = sub d =delete n =no operate
-
+void EMS::newprocess(string& strtxt,int edittimes,string oper)
+{
+    //string strtxt((char*)lmer);
+    int len = strtxt.length();
+  //  cout<<"---"<<len<<endl;
+    string temp;
+    int i = 0;
+    //if((oper=='n'||oper=='s')&&(edittimes&0x1))&&motif_l=l)
+    if(edittimes>0)
+    {
+        if(oper.at(motif_d-edittimes)=='s')
+        {
+           for(i = 0;i<len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.replace(i,1,1,alphabet[i1]);
+                    newprocess(temp,edittimes-1,oper);
+                } 
+        }
+        else if(oper.at(motif_d-edittimes)=='d')
+        {
+             for(i = 0;i<=len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.erase(i,1);
+                    newprocess(temp,edittimes-1,oper);
+                }        
+        }
+        else if(oper.at(motif_d-edittimes)=='i')
+        {
+            for(i = 0;i<=len;i++) 
+                for(int i1 = 0;i1<alphabetsize;i1++)
+                {
+                    temp = strtxt;
+                    temp.insert(i,1,alphabet[i1]);
+                    newprocess(temp,edittimes-1,oper);
+                }   
+        }
+    }  
+    else if(len == motif_l)
+    {
+        int idx = convertCharToInt(strtxt.data());
+       // cout<<mercount<<endl;
+        if (A1[idx] != mercount) 
+        {
+            A1[idx] = mercount;
+            A2[idx]++;
+        }
+    }
+}
 void EMS::process(string& strtxt,int edittimes,char oper)
 {
     //string strtxt((char*)lmer);
@@ -232,7 +320,6 @@ void EMS::process(string& strtxt,int edittimes,char oper)
         }
     }
 }
-
 /*void EMS::process(char* lmer)
 {
     string strtxt((char*)lmer);
@@ -381,11 +468,11 @@ int EMS::convertCharToInt(const char *input)
     }
     return value>>2;
 }*/
-bool EMS::eleExist(hashmap map,string key)
+/*bool EMS::eleExist(hashmap map,string key)
 {
    hashmap::iterator it = map.find(key);
    if (it != map.end())
     return true;
 else
     return false;
-}
+}*/
