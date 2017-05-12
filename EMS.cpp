@@ -21,6 +21,12 @@ EMS::EMS(const char* filename,i8 l,i8 d)
     for(int j = motif_d;j>=-motif_d;j--)
     {
         auto vv = gen(l-j);
+        cout<<"----"<<endl;
+        for(auto v : vv)
+        {
+            cout<<v<<endl;
+        }
+        cout<<"----"<<endl;
         opermap.insert(hashpair(j,vv));
     }
     while (!feof(fp))    
@@ -78,7 +84,7 @@ vector<string> EMS::gen(int nl)
     {
         string str(motif_d,'d');
         oper.insert(oper.begin(),str);
-        cout<<str;
+        //cout<<str;
         return oper;
     }
     else if(motif_l-nl==motif_d)
@@ -105,9 +111,13 @@ vector<string> EMS::gen(int nl)
                 {
                     string str;
                     str.insert(0,i,'d');
-                    str.insert(0,motif_d-str.length(),'d');
+                    
                     str.insert(0,(di-i)*2,'s');
                     str.insert(0,i,'i');
+                    if(motif_l-nl==0)
+                        str.insert(0,motif_d-str.length(),'s');
+                    if(motif_l-nl<0)
+                        str.insert(0,motif_d-str.length(),'d');
                     oper.insert(oper.begin(),str);
                 }
 
@@ -129,7 +139,10 @@ vector<string> EMS::gen(int nl)
                     str.insert(0,i,'d');
                     str.insert(0,(di-i)*2,'s');
                     str.insert(0,i,'i');
-                    str.insert(0,motif_d-str.length(),'i');
+                    if(motif_l-nl==0)
+                        str.insert(0,motif_d-str.length(),'s');
+                    if(motif_l-nl>0)
+                        str.insert(0,motif_d-str.length(),'i');
                     oper.insert(oper.begin(),str);
                 }
 

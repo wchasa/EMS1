@@ -6,10 +6,11 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/test.out",
-            "args": ["./yst03r.fasta" "10" "2"],
+            "args": ["./yst03r.fasta" "11" "3"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
+            "MIDebuggerPath":"C:\\MinGW\\bin\\gdb.exe";
             "externalConsole": true,
             "linux": {
                 "MIMode": "gdb",

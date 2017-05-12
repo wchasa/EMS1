@@ -17,6 +17,6 @@ int main(int argc,char* argv[])
     t1 = clock();   
     EMS em(argv[1],atoi(argv[2]),atoi(argv[3]));    
     t2 = clock();
-    cout<<"处理时间："<<double(t2-t1)/CLOCKS_PER_SEC<<"s"<<endl;
+    cout<<"time:"<<double(t2-t1)/CLOCKS_PER_SEC<<"s"<<endl;
     return 0;
 }
